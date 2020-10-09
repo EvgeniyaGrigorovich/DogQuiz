@@ -7,12 +7,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Button> buttons;
     private int rightCount;
     private int wrongCount;
+    private ProgressBar progressBar;
 
 
     @Override
@@ -61,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
         listName = new ArrayList<>();
         listImg = new ArrayList<>();
         buttons = new ArrayList<>();
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setMax(10);
 
         buttons.add(button1);
         buttons.add(button2);
@@ -70,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
         getContent();
         playGame();
 
-
+        progressBar.getProgressDrawable().setColorFilter(
+                Color.GRAY, android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     private void getContent() {
@@ -94,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
                 String name = matcherName.group(1);
                 listName.add(name);
             }
+
+            Log.i(LOG_TAG, String.valueOf(listName.size()));
+            Log.i(LOG_TAG, String.valueOf(listImg.size()));
 //            for(String s: listName){
 //                Log.i(LOG_TAG, s);
 //            }
@@ -139,14 +148,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void generateQuestion() {
-        numberOfQuestion = (int) (Math.random() * listName.size());
-        numberOfRightAnswer = (int) (Math.random() * buttons.size());
-
+        numberOfQuestion = RANDOM.nextInt(listName.size());
+        numberOfRightAnswer = RANDOM.nextInt(buttons.size());
     }
 
     private int generateWrongAnswer() {
-        return (int) (Math.random() * listName.size());
-
+        return (int)  RANDOM.nextInt(listName.size());
     }
 
     public void onClickAnswer(View view) {
@@ -155,9 +162,11 @@ public class MainActivity extends AppCompatActivity {
         if (tag == numberOfRightAnswer) {
             Toast.makeText(this, "Правильно:)", Toast.LENGTH_SHORT).show();
             rightCount++;
+            progressBar.incrementProgressBy(1);
         } else {
-            Toast.makeText(this, "Не правильно:( " + listName.get(numberOfRightAnswer), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Не правильно:( " + listName.get(numberOfQuestion), Toast.LENGTH_SHORT).show();
             wrongCount++;
+            progressBar.incrementProgressBy(1);
         }
         playGame();
     }
