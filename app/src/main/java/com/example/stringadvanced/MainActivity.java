@@ -29,7 +29,6 @@ import javax.net.ssl.HttpsURLConnection;
 public class MainActivity extends AppCompatActivity {
     private static final Random RANDOM = new Random();
     private static final String WEB = "https://lapkins.ru/dog/";
-    private final DownloadImage downloadImage = new DownloadImage();
     private ImageView imageView;
     private Button button1;
     private Button button2;
@@ -74,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         DownloadPage downloadPage = new DownloadPage();
         try {
             String result = downloadPage.execute(WEB).get();
-//<img src='/upload/iblock/ed9/ed93b033c39f22c5b594c0c80f34f8be.jpg' alt="Английский кокер-спаниель">
             Pattern patternImg = Pattern.compile("img src='/(.*?)'");
             Matcher matcherImg = patternImg.matcher(result);
             while (matcherImg.find()) {
@@ -82,9 +80,9 @@ public class MainActivity extends AppCompatActivity {
                 listImg.add(https + img);
             }
 
-            for(String s: listImg){
-                Log.i(LOG_TAG, s);
-            }
+//            for(String s: listImg){
+//                Log.i(LOG_TAG, s);
+//            }
 
             Pattern patternName = Pattern.compile("<span>(.*?)</span>");
             Matcher matcherName = patternName.matcher(result);
@@ -92,9 +90,9 @@ public class MainActivity extends AppCompatActivity {
                 String name = matcherName.group(1);
                 listName.add(name);
             }
-            for(String s: listName){
-                Log.i(LOG_TAG, s);
-            }
+//            for(String s: listName){
+//                Log.i(LOG_TAG, s);
+//            }
 
         } catch (ExecutionException e) {
 
@@ -104,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void playGame(){
+        DownloadImage downloadImage = new DownloadImage();
         generateQuestion();
         try {
             Bitmap bitmap = downloadImage.execute(listImg.get(numberOfQuestion)).get();
@@ -126,12 +125,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void generateQuestion(){
-        numberOfQuestion =  RANDOM.nextInt(listName.size());
-        numberOfRightAnswer = RANDOM.nextInt(buttons.size());;
+        numberOfQuestion =  (int)(Math.random() * listName.size());
+        numberOfRightAnswer = (int)(Math.random() * buttons.size());;
     }
 
     private int generateWrongAnswer(){
-        return RANDOM.nextInt(listName.size());
+        return (int)(Math.random() * listName.size());
 
     }
 
@@ -148,12 +147,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static class DownloadPage extends AsyncTask<String, Void, String> {
-
+        URL url = null;
+        HttpsURLConnection httpsURLConnection = null;
 
         @Override
         protected String doInBackground(String... strings) {
-            URL url = null;
-            HttpsURLConnection httpsURLConnection = null;
+
             StringBuilder stringBuilder = new StringBuilder();
             try {
                 url = new URL(strings[0]);
@@ -179,11 +178,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static class DownloadImage extends AsyncTask<String, Void, Bitmap> {
-        HttpsURLConnection urlConnection = null;
-        URL url = null;
+
 
         @Override
         protected Bitmap doInBackground(String... strings) {
+            HttpsURLConnection urlConnection = null;
+            URL url = null;
             try {
                 url = new URL(strings[0]);
                 urlConnection = (HttpsURLConnection) url.openConnection();
@@ -200,37 +200,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             return null;
-        }
-    }
-
-    private static class DownloadString extends AsyncTask<String, Void, String> {
-        URL url = null;
-        HttpsURLConnection urlConnection = null;
-        StringBuilder result;
-        String line = "";
-
-        @Override
-        protected String doInBackground(String... strings) {
-            try {
-                url = new URL(strings[0]);
-                urlConnection = (HttpsURLConnection) url.openConnection();
-                result = new StringBuilder();
-                InputStream inputStream = urlConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                while (line != null) {
-                    line = bufferedReader.readLine();
-                    result.append(line);
-                }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-            return result.toString();
         }
     }
 }
