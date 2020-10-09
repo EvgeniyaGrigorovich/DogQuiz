@@ -30,7 +30,7 @@ public class ResultActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 //        if (intent.hasExtra("rightAnswer")) {
-            rightAnswer = intent.getIntExtra("rightAnswer", 0);
+        rightAnswer = intent.getIntExtra("rightAnswer", 0);
 //        } else {
 //            Intent back = new Intent(this, MainActivity.class);
 //            startActivity(back);
@@ -38,17 +38,17 @@ public class ResultActivity extends AppCompatActivity {
 
         if (rightAnswer < 3) {
             imageView.setImageResource(R.drawable.saddog);
-            resultCount.setText("Верных ответов:  "+ rightAnswer);
+            resultCount.setText("Верных ответов:  " + rightAnswer + " из 10");
             result.setText(R.string.text_sad_result);
         }
-        if (rightAnswer > 2 && rightAnswer < 8 ) {
+        if (rightAnswer > 2 && rightAnswer < 8) {
             imageView.setImageResource(R.drawable.gooddog);
-            resultCount.setText("Верных ответов:  "+ rightAnswer);
+            resultCount.setText("Верных ответов:  " + rightAnswer + " из 10");
             result.setText(R.string.text_good_result);
         }
         if (rightAnswer > 7) {
             imageView.setImageResource(R.drawable.perfectdog);
-            resultCount.setText("Верных ответов:  "+ rightAnswer);
+            resultCount.setText("Верных ответов:  " + rightAnswer + " из 10");
             result.setText(R.string.text_great);
         }
     }
