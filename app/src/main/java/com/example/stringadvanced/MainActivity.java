@@ -1,7 +1,9 @@
 package com.example.stringadvanced;
 
+import androidx.annotation.IntRange;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private int numberOfQuestion;
     private int numberOfRightAnswer;
     private ArrayList<Button> buttons;
+    private int rightCount;
+    private int wrongCount;
 
 
     @Override
@@ -64,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
 
         getContent();
         playGame();
-
 
 
     }
@@ -101,46 +104,58 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void playGame(){
-        DownloadImage downloadImage = new DownloadImage();
-        generateQuestion();
-        try {
-            Bitmap bitmap = downloadImage.execute(listImg.get(numberOfQuestion)).get();
-            if (bitmap!=null){
-                imageView.setImageBitmap(bitmap);
-                for (int i = 0; i < buttons.size();i++){
-                    if (i == numberOfRightAnswer){
-                        buttons.get(i).setText(listName.get(numberOfQuestion));
-                    } else {
-                        int wrongAnswer = generateWrongAnswer();
-                        buttons.get(i).setText(listName.get(wrongAnswer));
+    private void playGame() {
+        if ((rightCount + wrongCount) == 10) {
+            Log.i(LOG_TAG, "Блок if");
+            Intent intent = new Intent(this, ResultActivity.class);
+            intent.putExtra("rightAnswer", rightCount);
+            rightCount = 0;
+            wrongCount = 0;
+            startActivity(intent);
+        } else {
+            DownloadImage downloadImage = new DownloadImage();
+            generateQuestion();
+            try {
+                Bitmap bitmap = downloadImage.execute(listImg.get(numberOfQuestion)).get();
+                if (bitmap != null) {
+                    imageView.setImageBitmap(bitmap);
+                    for (int i = 0; i < buttons.size(); i++) {
+                        if (i == numberOfRightAnswer) {
+                            buttons.get(i).setText(listName.get(numberOfQuestion));
+                        } else {
+                            int wrongAnswer = generateWrongAnswer();
+                            buttons.get(i).setText(listName.get(wrongAnswer));
+                        }
                     }
                 }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
-    private void generateQuestion(){
-        numberOfQuestion =  (int)(Math.random() * listName.size());
-        numberOfRightAnswer = (int)(Math.random() * buttons.size());;
+    private void generateQuestion() {
+        numberOfQuestion = (int) (Math.random() * listName.size());
+        numberOfRightAnswer = (int) (Math.random() * buttons.size());
+
     }
 
-    private int generateWrongAnswer(){
-        return (int)(Math.random() * listName.size());
+    private int generateWrongAnswer() {
+        return (int) (Math.random() * listName.size());
 
     }
 
     public void onClickAnswer(View view) {
         Button button = (Button) view;
         int tag = Integer.parseInt((String) button.getTag());
-        if (tag == numberOfRightAnswer){
+        if (tag == numberOfRightAnswer) {
             Toast.makeText(this, "Правильно:)", Toast.LENGTH_SHORT).show();
+            rightCount++;
         } else {
-            Toast.makeText(this, "Не правильно:( "+listName.get(numberOfRightAnswer), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Не правильно:( " + listName.get(numberOfRightAnswer), Toast.LENGTH_SHORT).show();
+            wrongCount++;
         }
         playGame();
     }

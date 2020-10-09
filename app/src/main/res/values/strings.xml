@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">String Advanced</string>
+    <string name="text_continue">Попробовать еще</string>
+    <string name="text_great">Превосходно! Вы - истинный собачник! Продолжайте в том же духе!</string>
+    <string name="text_number_of_correct_answers">Верных ответов:</string>
+    <string name="text_sad_result">Пёсики грустят, что вы их не угадали:( Попробуйте еще, у вас все получится!</string>
+    <string name="text_good_result">Отличный результат, осталось совсем чуть-чуть! :) Попробуйте еще, у вас все получится!</string>
 </resources>
