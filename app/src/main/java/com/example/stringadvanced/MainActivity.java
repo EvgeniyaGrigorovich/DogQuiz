@@ -135,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
                             buttons.get(i).setText(listName.get(numberOfQuestion));
                         } else {
                             int wrongAnswer = generateWrongAnswer();
+                            if (wrongAnswer == numberOfQuestion){
+                                wrongAnswer = generateWrongAnswer();
+                            }
                             buttons.get(i).setText(listName.get(wrongAnswer));
                         }
                     }
