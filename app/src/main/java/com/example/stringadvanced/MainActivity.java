@@ -75,8 +75,7 @@ public class MainActivity extends AppCompatActivity {
         getContent();
         playGame();
 
-        progressBar.getProgressDrawable().setColorFilter(
-                Color.GRAY, android.graphics.PorterDuff.Mode.SRC_IN);
+        progressBar.getProgressDrawable().setColorFilter(Color.GRAY, android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     private void getContent() {
@@ -90,30 +89,20 @@ public class MainActivity extends AppCompatActivity {
                 listImg.add(https + img);
             }
 
-//            for(String s: listImg){
-//                Log.i(LOG_TAG, s);
-//            }
-
             Pattern patternName = Pattern.compile("<span>(.*?)</span>");
             Matcher matcherName = patternName.matcher(result);
             while (matcherName.find()) {
                 String name = matcherName.group(1);
                 listName.add(name);
             }
-
             Log.i(LOG_TAG, String.valueOf(listName.size()));
             Log.i(LOG_TAG, String.valueOf(listImg.size()));
-//            for(String s: listName){
-//                Log.i(LOG_TAG, s);
-//            }
-
         } catch (ExecutionException e) {
-
+            Log.e(LOG_TAG, e.toString());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-
 
     private void playGame() {
         if ((rightCount + wrongCount) == 10) {
